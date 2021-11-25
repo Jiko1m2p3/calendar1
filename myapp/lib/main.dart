@@ -36,6 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: SfCalendar(
         view: CalendarView.week,
+        dataSource: MeetingDataSource(getAppointments()),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -50,6 +51,28 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Icon(Icons.add),
       ),
     );
+  }
+}
+
+List<Appointment> getAppointments() {
+  List<Appointment> meetings = <Appointment>[];
+  final DateTime today = DateTime.now();
+  final DateTime startTime =
+      DateTime(today.year, today.month, today.day, 9, 0, 0);
+  final DateTime endTime = startTime.add(const Duration(hours: 2));
+
+  meetings.add(Appointment(
+      startTime: startTime,
+      endTime: endTime,
+      subject: 'conference',
+      color: Colors.blue));
+
+  return meetings;
+}
+
+class MeetingDataSource extends CalendarDataSource {
+  MeetingDataSource(List<Appointment> source) {
+    appointments = source;
   }
 }
 
