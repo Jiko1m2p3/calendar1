@@ -36,6 +36,7 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: SfCalendar(
         view: CalendarView.week,
+        showNavigationArrow: true,
         dataSource: MeetingDataSource(getAppointments()),
       ),
       floatingActionButton: FloatingActionButton(
@@ -60,11 +61,19 @@ List<Appointment> getAppointments() {
   final DateTime startTime =
       DateTime(today.year, today.month, today.day, 9, 0, 0);
   final DateTime endTime = startTime.add(const Duration(hours: 2));
+  final DateTime startTime2 =
+      DateTime(today.year, today.month, today.day, 12, 0, 0);
 
   meetings.add(Appointment(
       startTime: startTime,
       endTime: endTime,
       subject: 'conference',
+      color: Colors.blue));
+
+  meetings.add(Appointment(
+      startTime: startTime2,
+      endTime: endTime,
+      subject: 'MTG',
       color: Colors.blue));
 
   return meetings;
@@ -81,12 +90,37 @@ class AddSchedulePage extends StatefulWidget {
 }
 
 class _AddScheduleState extends State<AddSchedulePage> {
+  String _text = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Add page'),
-      ),
-    );
+        appBar: AppBar(
+          title: Text('Add page'),
+        ),
+        body: Container(
+            padding: EdgeInsets.all(64),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 8),
+                TextField(
+                  onChanged: (String value) {
+                    setState(() {
+                      _text = value;
+                    });
+                  },
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  child: ElevatedButton(
+                      onPressed: () {
+                        print('push');
+                        //値の渡し方が
+                        //想定では新しい予定をリストに追加してみたい
+                      },
+                      child: Text('testbutton')),
+                ),
+              ],
+            )));
   }
 }
