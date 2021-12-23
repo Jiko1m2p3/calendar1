@@ -85,6 +85,18 @@ class ResourceViewState extends State<ResourceView> {
             ],
           ),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            // "push"で新規画面に遷移
+            final newListText = await Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) {
+                // 遷移先の画面としてリスト追加画面を指定
+                return TodoAddPage();
+              }),
+            );
+          },
+          child: Icon(Icons.add),
+        ),
       ),
     );
   }
@@ -192,5 +204,62 @@ class _DataSource extends CalendarDataSource {
   _DataSource(List<Appointment> source, List<CalendarResource> resourceColl) {
     appointments = source;
     resources = resourceColl;
+  }
+}
+
+class TodoAddPage extends StatefulWidget {
+  _TodoAddPageState createState() => _TodoAddPageState();
+}
+
+class _TodoAddPageState extends State<TodoAddPage> {
+  // 入力されたテキストをデータとして持つ
+  String _text = '';
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('リスト追加画面'),
+        ),
+        body: Container(
+            padding: EdgeInsets.all(64),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(_text, style: TextStyle(color: Colors.blue)),
+                const SizedBox(height: 8),
+                TextField(
+                  onChanged: (String value) {
+                    setState(() {
+                      _text = value;
+                    });
+                  },
+                ),
+                const SizedBox(
+                  //リスト追加ボタン
+                  height: 8,
+                ),
+                Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(_text);
+                    },
+                    child: Text('リスト追加', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                const SizedBox(
+                    //キャンセルボタン
+                    height: 8),
+                Container(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text('キャンセル'),
+                  ),
+                )
+              ],
+            )));
   }
 }
