@@ -117,19 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _nameCollection.add('Tia');
     _nameCollection.add('Theresa');
     _nameCollection.add('Edith');
-    _nameCollection.add('Brooklyn');
-    _nameCollection.add('James William');
     _nameCollection.add('Sophia');
-    _nameCollection.add('Elena');
-    _nameCollection.add('Stephen');
-    _nameCollection.add('Zoey Addison');
-    _nameCollection.add('Daniel');
-    _nameCollection.add('Emilia');
-    _nameCollection.add('Kinsley Elena');
-    _nameCollection.add('Daniel');
-    _nameCollection.add('William');
-    _nameCollection.add('Addison');
-    _nameCollection.add('Ruby');
   }
 
   void _addResources() {
@@ -147,7 +135,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _addAppointmentDetails() {
     _subjectCollection = <String>[];
     _subjectCollection.add('General Meeting');
-    _subjectCollection.add('Plan Execution');
+    _subjectCollection.add('アルバイト');
     _subjectCollection.add('Project Plan');
     _subjectCollection.add('Consulting');
     _subjectCollection.add('Support');
@@ -186,6 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if (_employeeIds.length > 1 && k % 2 == 0) {
           continue;
         }
+        //以下が時間とか名前とかの追加画面？
         for (int j = 0; j < 2; j++) {
           final DateTime date = DateTime.now().add(Duration(days: k + j));
           int startHour = 9 + random.nextInt(6);
@@ -196,7 +185,7 @@ class _MyHomePageState extends State<MyHomePage> {
           _shiftCollection.add(Appointment(
               startTime: _shiftStartTime,
               endTime: _shiftStartTime.add(const Duration(hours: 1)),
-              subject: _subjectCollection[random.nextInt(8)],
+              subject: _subjectCollection[1],
               color: _colorCollection[random.nextInt(8)],
               startTimeZone: '',
               endTimeZone: '',
@@ -236,6 +225,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     <CalendarResource>[resource]);
               },
             ),
+            /*
             TextButton(
               child: const Text('Remove resource'),
               onPressed: () {
@@ -259,6 +249,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     _employeeCollection);
               },
             ),
+            */
             Expanded(
               child: SfCalendar(
                 view: CalendarView.timelineWeek,
@@ -278,6 +269,9 @@ class _MyHomePageState extends State<MyHomePage> {
               return TodoAddPage();
             }),
           );
+          if (newListText != null) {
+            int time = int.parse(newListText);
+          }
         },
         child: Icon(Icons.add),
       ),
@@ -291,20 +285,28 @@ class TodoAddPage extends StatefulWidget {
 
 class _TodoAddPageState extends State<TodoAddPage> {
   // 入力されたテキストをデータとして持つ
+  //このページで入力したデータをもとにアポイントメントを作成して、その配列？を渡す
   String _text = '';
+  int start = 0;
+  int end = 0;
+  String t1 = '';
+  String t2 = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('リスト追加画面'),
+          title: Text('追加画面'),
         ),
         body: Container(
             padding: EdgeInsets.all(64),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(_text, style: TextStyle(color: Colors.blue)),
+                //Text(_text, style: TextStyle(color: Colors.blue)),
+                //DatetimePicker で入力欄を作成する
                 const SizedBox(height: 8),
+                Text('要件'),
                 TextField(
                   onChanged: (String value) {
                     setState(() {
@@ -312,6 +314,25 @@ class _TodoAddPageState extends State<TodoAddPage> {
                     });
                   },
                 ),
+                const SizedBox(height: 8),
+                Text('開始時間'),
+                TextField(
+                  onChanged: (String value2) {
+                    setState(() {
+                      t1 = value2;
+                    });
+                  },
+                ),
+                const SizedBox(height: 8),
+                Text('終了時間'),
+                TextField(
+                  onChanged: (String value3) {
+                    setState(() {
+                      t2 = value3;
+                    });
+                  },
+                ),
+
                 const SizedBox(
                   //リスト追加ボタン
                   height: 8,
@@ -320,9 +341,10 @@ class _TodoAddPageState extends State<TodoAddPage> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
+                      //appointmentがたの変数をつくって、それを返す
                       Navigator.of(context).pop(_text);
                     },
-                    child: Text('リスト追加', style: TextStyle(color: Colors.white)),
+                    child: Text('追加', style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 const SizedBox(
