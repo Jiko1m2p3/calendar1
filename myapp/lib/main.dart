@@ -33,8 +33,11 @@ class ResourceViewState extends State<ResourceView> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      //構造？ウィジェットが要調整
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
+      home: MyHomePage(),
+      //HOME以下を別ウィジェットに移動させる
+      /*    home: Scaffold(
         body: SafeArea(
           child: Column(
             children: [
@@ -98,6 +101,7 @@ class ResourceViewState extends State<ResourceView> {
           child: Icon(Icons.add),
         ),
       ),
+      */
     );
   }
 
@@ -204,6 +208,80 @@ class _DataSource extends CalendarDataSource {
   _DataSource(List<Appointment> source, List<CalendarResource> resourceColl) {
     appointments = source;
     resources = resourceColl;
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            TextButton(
+              child: const Text('Insert resource'),
+              onPressed: () {
+                final CalendarResource resource = CalendarResource(
+                  displayName: 'Sophia',
+                  color: Colors.red,
+                  id: '0004',
+                );
+                //   _employeeCollection.insert(2, resource);
+                //   _events!.notifyListeners(CalendarDataSourceAction.addResource,
+                //       <CalendarResource>[resource]);
+              },
+            ),
+            TextButton(
+              child: const Text('Remove resource'),
+              onPressed: () {
+                //   final CalendarResource resource = _employeeCollection[0];
+                //    _employeeCollection.remove(resource);
+                //    _events!.notifyListeners(
+                //       CalendarDataSourceAction.removeResource,
+                //       <CalendarResource>[resource]);
+              },
+            ),
+            TextButton(
+              child: const Text('Reset resource'),
+              onPressed: () {
+                //   _employeeCollection = <CalendarResource>[];
+                //    _events!.resources!.clear();
+                //   _employeeCollection.add(CalendarResource(
+                //       displayName: "Sophia", id: '0004', color: Colors.green));
+
+                //   _events!.resources!.addAll(_employeeCollection);
+                //  _events!.notifyListeners(CalendarDataSourceAction.resetResource,
+                //      _employeeCollection);
+              },
+            ),
+            Expanded(
+              child: SfCalendar(
+                view: CalendarView.timelineWeek,
+                showDatePickerButton: true,
+                //     dataSource: _events,
+              ),
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // "push"で新規画面に遷移
+          final newListText = await Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) {
+              // 遷移先の画面としてリスト追加画面を指定
+              return TodoAddPage();
+            }),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
+    );
   }
 }
 
