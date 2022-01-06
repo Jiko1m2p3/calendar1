@@ -12,24 +12,6 @@ class ResourceView extends StatefulWidget {
 }
 
 class ResourceViewState extends State<ResourceView> {
-  List<String> _subjectCollection = <String>[];
-  List<Color> _colorCollection = <Color>[];
-  List<Appointment> _shiftCollection = <Appointment>[];
-  List<CalendarResource> _employeeCollection = <CalendarResource>[];
-  List<String> _nameCollection = <String>[];
-  _DataSource? _events;
-
-  @override
-  void initState() {
-    _addResourceDetails();
-    _addResources();
-    _addAppointmentDetails();
-    _addAppointments();
-    _events = _DataSource(_shiftCollection, _employeeCollection);
-
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -104,6 +86,27 @@ class ResourceViewState extends State<ResourceView> {
       */
     );
   }
+}
+
+class _DataSource extends CalendarDataSource {
+  _DataSource(List<Appointment> source, List<CalendarResource> resourceColl) {
+    appointments = source;
+    resources = resourceColl;
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  List<String> _subjectCollection = <String>[];
+  List<Color> _colorCollection = <Color>[];
+  List<Appointment> _shiftCollection = <Appointment>[];
+  List<CalendarResource> _employeeCollection = <CalendarResource>[];
+  List<String> _nameCollection = <String>[];
+  _DataSource? _events;
 
   void _addResourceDetails() {
     _nameCollection = <String>[];
@@ -202,21 +205,18 @@ class ResourceViewState extends State<ResourceView> {
       }
     }
   }
-}
 
-class _DataSource extends CalendarDataSource {
-  _DataSource(List<Appointment> source, List<CalendarResource> resourceColl) {
-    appointments = source;
-    resources = resourceColl;
-  }
-}
-
-class MyHomePage extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
+  void initState() {
+    _addResourceDetails();
+    _addResources();
+    _addAppointmentDetails();
+    _addAppointments();
+    _events = _DataSource(_shiftCollection, _employeeCollection);
 
-class _MyHomePageState extends State<MyHomePage> {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -231,39 +231,39 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Colors.red,
                   id: '0004',
                 );
-                //   _employeeCollection.insert(2, resource);
-                //   _events!.notifyListeners(CalendarDataSourceAction.addResource,
-                //       <CalendarResource>[resource]);
+                _employeeCollection.insert(2, resource);
+                _events!.notifyListeners(CalendarDataSourceAction.addResource,
+                    <CalendarResource>[resource]);
               },
             ),
             TextButton(
               child: const Text('Remove resource'),
               onPressed: () {
-                //   final CalendarResource resource = _employeeCollection[0];
-                //    _employeeCollection.remove(resource);
-                //    _events!.notifyListeners(
-                //       CalendarDataSourceAction.removeResource,
-                //       <CalendarResource>[resource]);
+                final CalendarResource resource = _employeeCollection[0];
+                _employeeCollection.remove(resource);
+                _events!.notifyListeners(
+                    CalendarDataSourceAction.removeResource,
+                    <CalendarResource>[resource]);
               },
             ),
             TextButton(
               child: const Text('Reset resource'),
               onPressed: () {
-                //   _employeeCollection = <CalendarResource>[];
-                //    _events!.resources!.clear();
-                //   _employeeCollection.add(CalendarResource(
-                //       displayName: "Sophia", id: '0004', color: Colors.green));
+                _employeeCollection = <CalendarResource>[];
+                _events!.resources!.clear();
+                _employeeCollection.add(CalendarResource(
+                    displayName: "Sophia", id: '0004', color: Colors.green));
 
-                //   _events!.resources!.addAll(_employeeCollection);
-                //  _events!.notifyListeners(CalendarDataSourceAction.resetResource,
-                //      _employeeCollection);
+                _events!.resources!.addAll(_employeeCollection);
+                _events!.notifyListeners(CalendarDataSourceAction.resetResource,
+                    _employeeCollection);
               },
             ),
             Expanded(
               child: SfCalendar(
                 view: CalendarView.timelineWeek,
                 showDatePickerButton: true,
-                //     dataSource: _events,
+                dataSource: _events,
               ),
             ),
           ],
