@@ -315,13 +315,12 @@ class _TodoAddPageState extends State<TodoAddPage> {
                   },
                 ),
                 const SizedBox(height: 8),
-                Text('開始時間'),
-                TextField(
-                  onChanged: (String value2) {
-                    setState(() {
-                      t1 = value2;
-                    });
-                  },
+                Container(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text('test'),
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text('終了時間'),
