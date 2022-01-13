@@ -183,7 +183,7 @@ class _MyHomePageState extends State<MyHomePage> {
           final DateTime _shiftStartTime =
               DateTime(date.year, date.month, date.day, startHour, 0, 0);
           _shiftCollection.add(Appointment(
-              startTime: _shiftStartTime,
+              startTime: _shiftStartTime, //datetimeがたで時間が入っている
               endTime: _shiftStartTime.add(const Duration(hours: 1)),
               subject: _subjectCollection[1],
               color: _colorCollection[random.nextInt(8)],
