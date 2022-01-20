@@ -174,7 +174,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if (_employeeIds.length > 1 && k % 2 == 0) {
           continue;
         }
-        //以下が時間とか名前とかの追加画面？
+        //以下が初期画面用のシフト追加
         for (int j = 0; j < 2; j++) {
           final DateTime date = DateTime.now().add(Duration(days: k + j));
           int startHour = 9 + random.nextInt(6);
@@ -270,7 +270,15 @@ class _MyHomePageState extends State<MyHomePage> {
             }),
           );
           if (newListText != null) {
-            int time = int.parse(newListText);
+            //ここで追加の処理をかくのかな
+            final CalendarResource resource = CalendarResource(
+              displayName: 'Sophia',
+              color: Colors.red,
+              id: '0004',
+            );
+            _employeeCollection.insert(2, resource);
+            _events!.notifyListeners(CalendarDataSourceAction.addResource,
+                <CalendarResource>[resource]);
           }
         },
         child: Icon(Icons.add),
@@ -286,27 +294,24 @@ class TodoAddPage extends StatefulWidget {
 class _TodoAddPageState extends State<TodoAddPage> {
   // 入力されたテキストをデータとして持つ
   //このページで入力したデータをもとにアポイントメントを作成して、その配列？を渡す
+  DateTime selectedTime = DateTime.now();
+  DateTime selectedDate = DateTime.now();
+  // 入力されたテキストをデータとして持つ
   String _text = '';
-  int start = 0;
-  int end = 0;
-  String t1 = '';
-  String t2 = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('追加画面'),
+          title: Text('シフト追加画面'),
         ),
         body: Container(
             padding: EdgeInsets.all(64),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                //Text(_text, style: TextStyle(color: Colors.blue)),
-                //DatetimePicker で入力欄を作成する
+                Text(_text, style: TextStyle(color: Colors.blue)),
                 const SizedBox(height: 8),
-                Text('要件'),
                 TextField(
                   onChanged: (String value) {
                     setState(() {
@@ -314,24 +319,6 @@ class _TodoAddPageState extends State<TodoAddPage> {
                     });
                   },
                 ),
-                const SizedBox(height: 8),
-                Container(
-                  width: double.infinity,
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text('test'),
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text('終了時間'),
-                TextField(
-                  onChanged: (String value3) {
-                    setState(() {
-                      t2 = value3;
-                    });
-                  },
-                ),
-
                 const SizedBox(
                   //リスト追加ボタン
                   height: 8,
@@ -340,10 +327,12 @@ class _TodoAddPageState extends State<TodoAddPage> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      //appointmentがたの変数をつくって、それを返す
-                      Navigator.of(context).pop(_text);
+                      Appointment shift = Appointment(
+                          startTime: selectedTime,
+                          endTime: selectedDate.add(const Duration(hours: 1)));
+                      Navigator.of(context).pop(shift);
                     },
-                    child: Text('追加', style: TextStyle(color: Colors.white)),
+                    child: Text('リスト追加', style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 const SizedBox(
@@ -357,8 +346,62 @@ class _TodoAddPageState extends State<TodoAddPage> {
                     },
                     child: Text('キャンセル'),
                   ),
+                ),
+                const SizedBox(height: 8),
+                Text('日付'),
+                Container(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () {
+                      _selectDate(context);
+                    },
+                    child: Text(
+                        "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}"),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text('開始時刻'),
+                Container(
+                  width: double.infinity,
+                  child: TextButton(
+                    onPressed: () {
+                      _selectTime(context);
+                    },
+                    child: Text("${selectedTime.hour}:${selectedTime.minute}"),
+                  ),
                 )
               ],
             )));
+  }
+
+  Future<Null> _selectTime(BuildContext context) async {
+    final TimeOfDay? timeofday = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (timeofday != null && timeofday != selectedTime) {
+      setState(() {
+        selectedTime = _toDataTime(timeofday);
+      });
+    }
+  }
+
+  _toDataTime(TimeOfDay timeofday) {
+    var now = DateTime.now();
+    return DateTime(
+        now.year, now.month, now.day, timeofday.hour, timeofday.minute);
+  }
+
+  _selectDate(BuildContext context) async {
+    final DateTime? selected = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2010),
+      lastDate: DateTime(2025),
+    );
+    if (selected != null && selected != selectedDate)
+      setState(() {
+        selectedDate = selected;
+      });
   }
 }
