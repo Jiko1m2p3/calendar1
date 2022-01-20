@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
+//切りのいいとこで、書きかけにならないように
 
 void main() => runApp(const ResourceView());
 
@@ -158,6 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _addAppointments() {
+    //以下が初期画面用のシフト追加
     _shiftCollection = <Appointment>[];
     final Random random = Random();
     for (int i = 0; i < _employeeCollection.length; i++) {
@@ -174,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
         if (_employeeIds.length > 1 && k % 2 == 0) {
           continue;
         }
-        //以下が初期画面用のシフト追加
+
         for (int j = 0; j < 2; j++) {
           final DateTime date = DateTime.now().add(Duration(days: k + j));
           int startHour = 9 + random.nextInt(6);
@@ -266,17 +268,20 @@ class _MyHomePageState extends State<MyHomePage> {
           final newListText = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) {
               // 遷移先の画面としてリスト追加画面を指定
+
               return TodoAddPage();
             }),
           );
           if (newListText != null) {
-            //ここで追加の処理をかくのかな
+            //ここで追加の処理をかく
+            //160-190行を参考に次回作業する
             final CalendarResource resource = CalendarResource(
               displayName: 'Sophia',
               color: Colors.red,
               id: '0004',
             );
-            _employeeCollection.insert(2, resource);
+            _employeeCollection.insert(1, resource);
+            _shiftCollection.add(newListText);
             _events!.notifyListeners(CalendarDataSourceAction.addResource,
                 <CalendarResource>[resource]);
           }
