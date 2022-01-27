@@ -16,75 +16,8 @@ class ResourceViewState extends State<ResourceView> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      //構造？ウィジェットが要調整
       debugShowCheckedModeBanner: false,
       home: MyHomePage(),
-      //HOME以下を別ウィジェットに移動させる
-      /*    home: Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: [
-              TextButton(
-                child: const Text('Insert resource'),
-                onPressed: () {
-                  final CalendarResource resource = CalendarResource(
-                    displayName: 'Sophia',
-                    color: Colors.red,
-                    id: '0004',
-                  );
-                  _employeeCollection.insert(2, resource);
-                  _events!.notifyListeners(CalendarDataSourceAction.addResource,
-                      <CalendarResource>[resource]);
-                },
-              ),
-              TextButton(
-                child: const Text('Remove resource'),
-                onPressed: () {
-                  final CalendarResource resource = _employeeCollection[0];
-                  _employeeCollection.remove(resource);
-                  _events!.notifyListeners(
-                      CalendarDataSourceAction.removeResource,
-                      <CalendarResource>[resource]);
-                },
-              ),
-              TextButton(
-                child: const Text('Reset resource'),
-                onPressed: () {
-                  _employeeCollection = <CalendarResource>[];
-                  _events!.resources!.clear();
-                  _employeeCollection.add(CalendarResource(
-                      displayName: "Sophia", id: '0004', color: Colors.green));
-
-                  _events!.resources!.addAll(_employeeCollection);
-                  _events!.notifyListeners(
-                      CalendarDataSourceAction.resetResource,
-                      _employeeCollection);
-                },
-              ),
-              Expanded(
-                child: SfCalendar(
-                  view: CalendarView.timelineWeek,
-                  showDatePickerButton: true,
-                  dataSource: _events,
-                ),
-              ),
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            // "push"で新規画面に遷移
-            final newListText = await Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) {
-                // 遷移先の画面としてリスト追加画面を指定
-                return TodoAddPage();
-              }),
-            );
-          },
-          child: Icon(Icons.add),
-        ),
-      ),
-      */
     );
   }
 }
@@ -265,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           // "push"で新規画面に遷移
-          final newListText = await Navigator.of(context).push(
+          Appointment? newListText = await Navigator.of(context).push(
             MaterialPageRoute(builder: (context) {
               // 遷移先の画面としてリスト追加画面を指定
 
@@ -275,15 +208,15 @@ class _MyHomePageState extends State<MyHomePage> {
           if (newListText != null) {
             //ここで追加の処理をかく
             //160-190行を参考に次回作業する
-            final CalendarResource resource = CalendarResource(
-              displayName: 'Sophia',
-              color: Colors.red,
-              id: '0004',
-            );
-            _employeeCollection.insert(1, resource);
+
+            newListText.resourceIds = ['0001'];
+            debugPrint('${newListText}');
+            _shiftCollection = <Appointment>[];
+
             _shiftCollection.add(newListText);
-            _events!.notifyListeners(CalendarDataSourceAction.addResource,
-                <CalendarResource>[resource]);
+
+            _events!.notifyListeners(
+                CalendarDataSourceAction.addResource, _shiftCollection);
           }
         },
         child: Icon(Icons.add),
@@ -334,7 +267,12 @@ class _TodoAddPageState extends State<TodoAddPage> {
                     onPressed: () {
                       Appointment shift = Appointment(
                           startTime: selectedTime,
-                          endTime: selectedDate.add(const Duration(hours: 1)));
+                          endTime: selectedTime.add(const Duration(hours: 1)),
+                          isAllDay: false,
+                          subject: _text);
+
+                      debugPrint('${selectedTime}');
+
                       Navigator.of(context).pop(shift);
                     },
                     child: Text('リスト追加', style: TextStyle(color: Colors.white)),
